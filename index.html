@@ -277,6 +277,18 @@
     display:block;
     transform: rotate(-2deg);
   }
+  .note-video{
+    width:100%;
+    max-width:220px;
+    aspect-ratio:1/1;
+    object-fit:cover;
+    border-radius:14px;
+    border:4px solid var(--dorado);
+    box-shadow: 0 10px 26px rgba(106,79,160,0.35);
+    margin:0 auto 20px;
+    display:block;
+    transform: rotate(-2deg);
+  }
   .note-close{
     background: var(--morado);
     color:white;
@@ -453,6 +465,7 @@
 <div id="note-modal">
   <div class="note-card">
     <img class="note-photo" id="note-photo" src="" alt="">
+    <video class="note-video" id="note-video" src="" controls playsinline style="display:none;"></video>
     <p id="note-text"></p>
     <button class="note-close" id="note-close">cerrar</button>
   </div>
@@ -553,6 +566,7 @@
   const noteCard = document.querySelector('.note-card');
   const noteText = document.getElementById('note-text');
   const notePhoto = document.getElementById('note-photo');
+  const noteVideo = document.getElementById('note-video');
   const noteClose = document.getElementById('note-close');
 
   // cada corazón tiene su propia animación de tarjeta + su propio efecto de estallido
@@ -632,10 +646,25 @@
       triggerBurst(burstEffects[i % burstEffects.length], cx, cy);
 
       noteText.textContent = wish;
-      notePhoto.style.display = 'block';
-      notePhoto.onerror = () => { notePhoto.style.display = 'none'; };
-      notePhoto.src = `nota${i+1}.jpg`;
-      notePhoto.alt = `Foto ${i+1}`;
+
+      const isVideoNote = (i+1) === 6;
+
+      if(isVideoNote){
+        noteVideo.pause();
+        notePhoto.style.display = 'none';
+        noteVideo.style.display = 'block';
+        noteVideo.onerror = () => { noteVideo.style.display = 'none'; };
+        noteVideo.src = 'nota6.mp4';
+        noteVideo.load();
+      } else {
+        noteVideo.pause();
+        noteVideo.style.display = 'none';
+        notePhoto.style.display = 'block';
+        notePhoto.onerror = () => { notePhoto.style.display = 'none'; };
+        notePhoto.src = `nota${i+1}.jpg`;
+        notePhoto.alt = `Foto ${i+1}`;
+      }
+
       noteCard.className = 'note-card ' + noteAnimations[i % noteAnimations.length];
       // reiniciar animación por si se abre la misma nota otra vez
       void noteCard.offsetWidth;
@@ -644,9 +673,15 @@
     wishHeartsContainer.appendChild(heart);
   });
 
-  noteClose.addEventListener('click', ()=> noteModal.classList.remove('active'));
+  noteClose.addEventListener('click', ()=> {
+    noteModal.classList.remove('active');
+    noteVideo.pause();
+  });
   noteModal.addEventListener('click', (e)=>{
-    if(e.target === noteModal) noteModal.classList.remove('active');
+    if(e.target === noteModal){
+      noteModal.classList.remove('active');
+      noteVideo.pause();
+    }
   });
 </script>
 
