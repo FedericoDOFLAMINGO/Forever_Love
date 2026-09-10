@@ -465,7 +465,7 @@
 <div id="note-modal">
   <div class="note-card">
     <img class="note-photo" id="note-photo" src="" alt="">
-    <video class="note-video" id="note-video" src="" controls playsinline style="display:none;"></video>
+    <video class="note-video" id="note-video" src="" playsinline muted="false" style="display:none;"></video>
     <p id="note-text"></p>
     <button class="note-close" id="note-close">cerrar</button>
   </div>
@@ -656,6 +656,7 @@
         noteVideo.onerror = () => { noteVideo.style.display = 'none'; };
         noteVideo.src = 'nota6.mp4';
         noteVideo.load();
+        noteVideo.play().catch(()=>{});
       } else {
         noteVideo.pause();
         noteVideo.style.display = 'none';
